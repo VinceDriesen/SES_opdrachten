@@ -1,27 +1,8 @@
 package be.kuleuven.candycrush;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class CheckNeighboursInGrid {
-
-    public static void main(String[] args) {
-        ArrayList<Integer> speelVeld = new ArrayList<Integer>();
-        speelVeld.add(0);speelVeld.add(0);speelVeld.add(1);speelVeld.add(0);speelVeld.add(1);
-        speelVeld.add(1);speelVeld.add(2);speelVeld.add(1);speelVeld.add(1);speelVeld.add(0);
-        speelVeld.add(0);speelVeld.add(2);speelVeld.add(1);speelVeld.add(2);speelVeld.add(0);
-        speelVeld.add(1);speelVeld.add(1);speelVeld.add(0);speelVeld.add(1);speelVeld.add(1);
-        speelVeld.add(2);speelVeld.add(1);speelVeld.add(0);speelVeld.add(0);speelVeld.add(0);
-
-        for (int test = 0; test < 25; test++) {
-            System.out.println(getSameNeighboursIds(speelVeld, 5, 5, test));
-        }
-
-
-    }
-
     /**
      * This method takes a 1D Iterable and an element in the array and gives back an iterable containing the indexes of all neighbours with the same value as the specified element
      *@return - Returns a 1D Iterable of ints, the Integers represent the indexes of all neighbours with the same value as the specified element on index 'indexToCheck'.
@@ -32,26 +13,44 @@ public class CheckNeighboursInGrid {
      */
     public static Iterable<Integer> getSameNeighboursIds(Iterable<Integer> grid,int width, int height, int indexToCheck) {
         ArrayList<Integer> list = new ArrayList<>();
-        ArrayList<Integer> neighbors = new ArrayList<>();
 
         for (Integer integer : grid) {
             list.add(integer);
         }
-        int numberToCheck = list.get(indexToCheck);
-        int numberPosVeritcal = indexToCheck / width;
-        int numberPosHorizontal = indexToCheck - (numberPosVeritcal * height);
 
+        int numberToCheck = list.get(indexToCheck); //Kijken welk nummer het is
+        int posVertical = indexToCheck / width; //Y-coördinaat van het nummer
+        int posHorizontal = indexToCheck - (posVertical * height); //X-coördinaat van het nummer
+
+        return getNeighbours(width, posVertical, posHorizontal, numberToCheck, list);
+    }
+
+    /**
+     * Finds the arrayList of the neighbours
+     * @param width of playingfield
+     * @param VerticalPosition Y-position of the index to check
+     * @param horizontalPosition X-position of the index to check
+     * @param number the number of index to check
+     * @param list the arraylist of all integers
+     * @return Arraylist of all the neighbouring integers
+     */
+    private static ArrayList<Integer> getNeighbours(int width, int VerticalPosition, int horizontalPosition, int number, ArrayList<Integer> list) {
+        ArrayList<Integer> neighBours = new ArrayList<>();
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                if(i == 0 && j == 0) { continue; }
-                int indexNumber =(numberPosVeritcal + j)*width + (numberPosHorizontal + i);
-                if (numberPosHorizontal + i < 0 || numberPosHorizontal + i >= width || numberPosVeritcal + j < 0 || numberPosVeritcal + j >= height) {continue;}
-                if (list.get((numberPosVeritcal + j)*width + (numberPosHorizontal + i)) == numberToCheck) {
-                    neighbors.add(indexNumber);
+                if(i == 0 && j == 0) { continue; } //Als het eigen cijfer is, mag deze geskipt worden
+                int indexNumber =(VerticalPosition + j)*width + (horizontalPosition + i); //Berekenen wat de index is van het cijfer
+                try {
+                    if (list.get(indexNumber) == number) {
+                        neighBours.add(indexNumber);
+                    }
+                }
+                catch (IndexOutOfBoundsException ignored) {
+                    //Hier kan nog een melding bij maar moet niet echt
                 }
             }
         }
-        Collections.sort(neighbors);
-        return neighbors;
+        Collections.sort(neighBours);
+        return neighBours;
     }
 }
