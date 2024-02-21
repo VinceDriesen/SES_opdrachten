@@ -4,6 +4,4 @@ module be.kuleuven.candycrush {
 
     requires org.controlsfx.controls;
 
-    opens be.kuleuven.candycrush to javafx.fxml;
-    exports be.kuleuven.candycrush;
 }
